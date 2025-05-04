@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}Messages | SkillSwap{% endblock %}
+
+{% block content %}
+<h1>Messages</h1>
+
+<div style="display: flex; height: 80vh; border: 1px solid #ccc; border-radius: 8px; overflow: hidden;">
+  <!-- Sidebar with users -->
+  <div style="width: 30%; background: #f8f9fa; padding: 1rem; border-right: 1px solid #ddd; overflow-y: auto;">
+    <h3>Conversations</h3>
+    <input type="text" placeholder="Search users..." style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 5px;">
+
+    <ul style="list-style: none; padding: 0;">
+      {% for partner in partners %}
+        <li style="margin-bottom: 0.8rem;">
+          <a href="{{ url_for('chat_partial', partner_id=partner.id) }}" class="chat-link" style="text-decoration: none; color: #333;">
+            <div style="display: flex; align-items: center;">
+              <div style="background: #6c63ff; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px;">
+                {{ partner.username[0]|upper }}
+              </div>
+              <div>
+                <strong>{{ partner.username }}</strong><br>
+                <span style="font-size: 0.8rem; color: #666;">Start a conversation</span>
+              </div>
+            </div>
+          </a>
+        </li>
+      {% else %}
+        <li>No connections found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Chat pane area -->
+  <div id="chat-pane" style="flex-grow: 1; padding: 2rem; overflow-y: auto;">
+    <div style="color: #888; text-align: center;">
+      <h2>Select a user to chat</h2>
+      <p style="font-size: 0.9rem;">Start a conversation by choosing a connection on the left.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Load chat content
+    document.querySelectorAll('.chat-link').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const url = this.href;
+
+        fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('chat-pane').innerHTML = html;
+          setTimeout(() => {
+            const chatBox = document.getElementById('chat-box');
+            if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+          }, 100);
+        });
+      });
+    });
+
+    // Submit message dynamically
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      if (form.id !== 'chat-form') return;
+
+      e.preventDefault();
+      const url = form.action;
+      const message = form.querySelector('[name="message"]').value.trim();
+      if (!message) return;
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({ message })
+      })
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('chat-pane').innerHTML = html;
+        setTimeout(() => {
+          const chatBox = document.getElementById('chat-box');
+          if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        }, 100);
+      })
+      .catch(err => {
+        console.error('Message send failed:', err);
+        alert('Failed to send message');
+      });
+    });
+  });
+</script>
+{% endblock %}

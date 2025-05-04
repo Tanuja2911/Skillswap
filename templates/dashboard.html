@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | SkillSwap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+        .alert {
+            background-color: #e6f0ff;
+            border: 1px solid #007bff;
+            color: #003366;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <h2>SkillSwap</h2>
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/matches">Matches</a></li>
+            <li><a href="/messages">Messages</a></li>
+            <li><a href="/sessions">Sessions</a></li>
+            <li><a href="/schedule">Schedule Session</a></li>
+            <li><a href="/settings">Settings</a></li>
+        </ul>
+        <div class="user">
+            <p>{{ user.username }}</p>
+            <p>{{ user.email }}</p>
+        </div>
+    </aside>
+
+    <main class="dashboard">
+        <h1>Dashboard</h1>
+        <p>Welcome back! Here’s what’s happening with your SkillSwap account.</p>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="overview">
+            <div class="card">My Matches<br><span>0</span></div>
+            <div class="card">Skills I Teach<br><span>{{ skills_teach|length }}</span></div>
+            <div class="card">Skills I Learn<br><span>{{ skills_learn|length }}</span></div>
+            <div class="card">Sessions<br><span>0</span></div>
+        </div>
+
+        <div class="grid">
+            <div class="card wide">
+                <h3>My Skills</h3>
+                <div class="tabs">
+                    <button onclick="showTab('teach')">Skills I Teach</button>
+                    <button onclick="showTab('learn')">Skills I Want to Learn</button>
+                </div>
+                <div id="teach" class="tab-content">
+                    {% if skills_teach %}
+                        <ul>{% for s in skills_teach %}<li>{{ s.name }}</li>{% endfor %}</ul>
+                    {% else %}
+                        <p>No skills added yet.</p>
+                        <button onclick="openAddSkillModal()">Add your first skill</button>
+                    {% endif %}
+                </div>
+                <div id="learn" class="tab-content" style="display:none;">
+                    {% if skills_learn %}
+                        <ul>{% for s in skills_learn %}<li>{{ s.name }}</li>{% endfor %}</ul>
+                    {% else %}
+                        <p>No skills added yet.</p>
+                        <button onclick="openAddSkillModal()">Add your first skill</button>
+                    {% endif %}
+                </div>
+                <button class="btn" onclick="openAddSkillModal()">+ Add Skill</button>
+            </div>
+
+            <div class="card">
+                <h3>Upcoming Sessions</h3>
+                <p>No upcoming sessions scheduled.</p>
+                <a href="/schedule" class="btn">+ Schedule a Session</a>
+            </div>
+
+            <div class="card">
+                <h3>Potential Matches</h3>
+                <p>No potential matches found yet.</p>
+                <a href="/matches" class="btn">See All</a>
+            </div>
+
+            <div class="card">
+                <h3>Recent Messages</h3>
+                <p>No messages yet.</p>
+                <a href="/messages" class="btn">View All</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<div id="addSkillModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<script>
+    function showTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.getElementById(tab).style.display = 'block';
+    }
+
+    function openAddSkillModal() {
+        fetch('/skill/add', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("modal-body").innerHTML = html;
+            document.getElementById("addSkillModal").style.display = "block";
+        });
+    }
+
+    document.querySelector(".close").onclick = function() {
+        document.getElementById("addSkillModal").style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("addSkillModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+</body>
+</html>

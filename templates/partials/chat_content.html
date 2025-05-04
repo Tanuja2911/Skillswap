@@ -1,0 +1,53 @@
+<h2 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #333; margin-bottom: 20px;">
+  Chat with {{ partner.username }}
+</h2>
+
+<div style="display: flex; flex-direction: column; align-items: center; margin: 0 auto; max-width: 800px;">
+  <div id="chat-box" style="background: #f5f7fa; padding: 1.5rem; border-radius: 12px; width: 100%; min-height: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow-y: auto;">
+    {% for msg in messages %}
+      {% if msg.sender_id == user.id %}
+        {% set align = "flex-end" %}
+        {% set bg = "#4086f4" %}
+        {% set text = "#ffffff" %}
+        {% set bubble = "0 8px 16px rgba(64, 134, 244, 0.2)" %}
+      {% else %}
+        {% set align = "flex-start" %}
+        {% set bg = "#ffffff" %}
+        {% set text = "#333333" %}
+        {% set bubble = "0 2px 10px rgba(0,0,0,0.05)" %}
+      {% endif %}
+
+      <div style="margin-bottom: 16px; display: flex; justify-content: {{ align }};">
+        <div style="background-color: {{ bg }}; color: {{ text }}; padding: 12px 18px; border-radius: 18px; max-width: 70%; box-shadow: {{ bubble }};">
+          <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9em;">{{ msg.sender.username }}</div>
+          <div style="line-height: 1.4;">{{ msg.content }}</div>
+
+          {% if msg.file_path %}
+            {% if msg.file_path.endswith(('.png', '.jpg', '.jpeg', '.gif')) %}
+              <div><img src="{{ msg.file_path }}" style="max-width: 300px; margin-top: 10px; border-radius: 10px;"></div>
+            {% else %}
+              <div><a href="{{ msg.file_path }}" target="_blank">📎 Download attachment</a></div>
+            {% endif %}
+          {% endif %}
+
+          <div style="font-size: 0.7em; opacity: 0.7; text-align: right; margin-top: 5px;">
+            {{ msg.timestamp.strftime('%H:%M') }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" method="POST" enctype="multipart/form-data"
+        action="{{ url_for('chat_partial', partner_id=partner.id) }}"
+        style="margin-top: 1rem; display: flex; gap: 10px; width: 100%; align-items: center;">
+    <input type="text" name="message" placeholder="Type a message..." required
+           style="flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+    <input type="file" name="file" accept="image/*,.pdf,.doc,.docx"
+           style="padding: 4px;">
+    <button type="submit"
+            style="padding: 12px 24px; background: #4086f4; color: white; border: none; border-radius: 6px;">
+      Send
+    </button>
+  </form>
+</div>

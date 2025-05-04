@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}Chat with {{ partner.username }}{% endblock %}
+
+{% block content %}
+<h2>Chat with {{ partner.username }}</h2>
+
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 1rem;">
+  <!-- Chat messages box -->
+  <div style="background: white; padding: 1rem; border-radius: 10px; width: 60%; min-height: 400px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+    {% for msg in messages %}
+      {% if msg.sender_id == user.id %}
+        {% set align = "flex-end" %}
+        {% set bg = "#dcf8c6" %}
+      {% else %}
+        {% set align = "flex-start" %}
+        {% set bg = "#e9e9eb" %}
+      {% endif %}
+
+      <div style="margin-bottom: 10px; display: flex; justify-content: {{ align }};">
+        <div style="background-color: {{ bg }}; padding: 10px 15px; border-radius:10px; max-width: 70%;">
+          <strong>{{ msg.sender.username }}:</strong> 
+          {% if msg.content %}{{ msg.content }}{% endif %}
+          
+          {% if msg.file_path %}
+            <div style="margin-top: 10px;">
+              {% if msg.file_path.endswith(('.png', '.jpg', '.jpeg', '.gif')) %}
+                <img src="{{ msg.file_path }}" style="max-width: 200px; border-radius: 8px;" />
+              {% else %}
+                <a href="{{ msg.file_path }}" target="_blank">📎 Download attachment</a>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          <div style="font-size: 0.75em; color: #888; margin-top: 5px;">
+            {{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Message input form -->
+  <form method="POST" action="{{ url_for('chat', partner_id=partner.id) }}"
+        enctype="multipart/form-data"
+        style="margin-top: 1rem; display: flex; width: 60%; gap: 10px;">
+    <input type="text" name="message" placeholder="Type a message..." 
+           style="flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <input type="file" name="file" accept="image/*,.pdf,.doc,.docx"
+           style="padding: 4px; border: 1px solid #ccc; border-radius: 5px;">
+    <button type="submit"
+            style="padding: 10px 20px; border: none; background: #4caf50; color: white; border-radius: 5px;">
+      Send
+    </button>
+  </form>
+</div>
+{% endblock %}
