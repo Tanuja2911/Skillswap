@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block title %}Matches | SkillSwap{% endblock %}
+
+{% block content %}
+<h1>Matches</h1>
+
+<div class="tabs" style="margin-bottom: 1.5rem;">
+    <button onclick="showTab('potential')" id="tab-potential" class="active btn">Potential Matches</button>
+    <button onclick="showTab('connections')" id="tab-connections" class="btn">My Connections</button>
+    <button onclick="showTab('pending')" id="tab-pending" class="btn">Pending</button>
+</div>
+
+<!-- POTENTIAL MATCHES -->
+<div id="tab-content-potential">
+    {% if matches %}
+        {% for match in matches %}
+            <div class="match-card" style="margin-bottom: 1rem; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
+                <h3>{{ match.user.username }}</h3>
+                <p>Match score: <strong>{{ match.score }}</strong></p>
+                <form method="POST" action="/connect">
+                    <input type="hidden" name="receiver_id" value="{{ match.user.id }}">
+                    <button class="btn">Send Request</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No potential matches found.</p>
+    {% endif %}
+</div>
+
+<!-- MY CONNECTIONS -->
+<div id="tab-content-connections" style="display:none;">
+    {% if my_connections %}
+        {% for conn in my_connections %}
+            {% set other = conn.receiver if conn.requester.id == user.id else conn.requester %}
+            <div class="match-card" style="margin-bottom: 1rem; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
+                <h3>{{ other.username }}</h3>
+                <p>You are now connected!</p>
+                <a class="btn" href="/messages">Send Message</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No connections yet.</p>
+    {% endif %}
+</div>
+
+<!-- PENDING REQUESTS -->
+<div id="tab-content-pending" style="display:none;">
+    {% if pending_requests %}
+        {% for req in pending_requests %}
+            <div class="match-card" style="margin-bottom: 1rem; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
+                <p>Waiting for <strong>{{ req.receiver.username }}</strong> to accept your request.</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if incoming_requests %}
+        {% for req in incoming_requests %}
+            <div class="match-card" style="margin-bottom: 1rem; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
+                <p><strong>{{ req.requester.username }}</strong> wants to connect with you.</p>
+                <form method="POST" action="/respond_request">
+                    <input type="hidden" name="conn_id" value="{{ req.id }}">
+                    <button name="action" value="accept" class="btn">Accept</button>
+                    <button name="action" value="reject" class="btn">Reject</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not pending_requests and not incoming_requests %}
+        <p>No pending activity.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function showTab(tab) {
+        ['potential', 'connections', 'pending'].forEach(t => {
+            document.getElementById('tab-content-' + t).style.display = 'none';
+            document.getElementById('tab-' + t).classList.remove('active');
+        });
+        document.getElementById('tab-content-' + tab).style.display = 'block';
+        document.getElementById('tab-' + tab).classList.add('active');
+    }
+</script>
+
+<style>
+    .tabs .btn {
+        background: #e5e7ff;
+        color: #333;
+        border: 1px solid #bbb;
+        margin-right: 8px;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .tabs .btn.active {
+        background: #4f46e5;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

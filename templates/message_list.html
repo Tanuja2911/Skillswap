@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+{% block title %}Messages | SkillSwap{% endblock %}
+
+{% block content %}
+<div class="messages-container">
+  <div class="messages-header">
+    <h1>Messages</h1>
+    <a href="{{ url_for('matches') }}" class="find-matches-btn">Find Matches</a>
+  </div>
+
+  <div class="messages-list">
+    {% if partners %}
+      <ul>
+        {% for partner in partners %}
+          <li class="message-item">
+            <a href="{{ url_for('chat', partner_id=partner.id) }}">
+              <div class="avatar">
+                {{ partner.username[0].upper() }}
+              </div>
+              <div class="partner-info">
+                <span class="partner-name">{{ partner.username }}</span>
+                <span class="last-message">Click to view conversation</span>
+              </div>
+              <div class="message-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+            <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+            <line x1="8" x2="16" y1="12" y2="12"></line>
+          </svg>
+        </div>
+        <p>You have no active connections yet</p>
+        <a href="{{ url_for('matches') }}" class="cta-button">Find Skill Partners</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .messages-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .messages-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .messages-header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .find-matches-btn {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .find-matches-btn:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .messages-list {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .messages-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .message-item {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .message-item:last-child {
+    border-bottom: none;
+  }
+  
+  .message-item a {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s ease;
+  }
+  
+  .message-item a:hover {
+    background-color: #f9fafb;
+  }
+  
+  .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #4f46e5;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+  }
+  
+  .partner-info {
+    flex: 1;
+  }
+  
+  .partner-name {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .last-message {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .message-arrow {
+    color: #d1d5db;
+  }
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+  
+  .empty-icon {
+    margin-bottom: 1.5rem;
+    color: #9ca3af;
+  }
+  
+  .empty-state p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .cta-button {
+    background-color: #4f46e5;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #4338ca;
+  }
+</style>
+{% endblock %}

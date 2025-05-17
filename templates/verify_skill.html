@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Skill</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .test-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .test-container h2 {
+            margin-bottom: 1rem;
+        }
+        .test-container form {
+            margin-top: 1rem;
+        }
+        .test-container label {
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        .test-container input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        .btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .flash {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash {{ 'success' if 'verified' in message else 'error' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>Skill Test ({{ index }}/{{ total }})</h2>
+        <form method="POST">
+            <p style="font-weight: bold;">{{ question.question }}</p>
+            {% for option in question.options %}
+                <label>
+                    <input type="radio" name="answer" value="{{ option }}" required>
+                    {{ option }}
+                </label>
+            {% endfor %}
+            <button type="submit" class="btn">Next</button>
+        </form>
+    </div>
+</body>
+</html>

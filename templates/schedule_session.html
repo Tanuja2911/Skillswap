@@ -1,0 +1,414 @@
+{% extends "layout.html" %}
+
+{% block title %}Schedule Session | SkillSwap{% endblock %}
+
+{% block content %}
+<div class="schedule-container">
+    <div class="schedule-card">
+        <div class="card-header">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+            <h1>Schedule a Session</h1>
+        </div>
+
+        <div class="card-body">
+            <form method="POST" class="schedule-form">
+                <div class="form-group">
+                    <label for="partner_id">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Choose User
+                    </label>
+                    <div class="select-wrapper">
+                        <select name="partner_id" id="partner_id" required>
+                            <option value="" disabled selected>Select a user</option>
+                            {% for u in connections %}
+                                <option value="{{ u.id }}">{{ u.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="select-arrow"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="skill_id">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        Skill to Share
+                    </label>
+                    <div class="select-wrapper">
+                        <select name="skill_id" id="skill_id" required>
+                            <option value="" disabled selected>Select a skill</option>
+                            {% for s in shared_skills %}
+                                <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="select-arrow"></div>
+                    </div>
+                </div>
+
+                <div class="time-row">
+                    <div class="form-group">
+                        <label for="start_time">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            Start Time
+                        </label>
+                        <div class="datetime-wrapper">
+                            <input type="datetime-local" name="start_time" id="start_time" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_time">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 8 14"></polyline>
+                            </svg>
+                            End Time
+                        </label>
+                        <div class="datetime-wrapper">
+                            <input type="datetime-local" name="end_time" id="end_time" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="session-summary">
+                    <div class="summary-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        Session Summary
+                    </div>
+                    <div class="summary-content" id="session-summary">
+                        Complete the form to see your session details
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    Schedule Session
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<style>
+    /* Global styling */
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        color: #1e293b;
+        background: #f8fafc;
+    }
+    
+    /* Page structure */
+    .schedule-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .schedule-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        padding: 1.5rem;
+        background: #f8f9fd;
+        border-bottom: 1px solid #eaedf3;
+        border-top: 4px solid #4f46e5;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: white;
+        color: #4f46e5;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    
+    .card-header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Form styling */
+    .schedule-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    label {
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    label svg {
+        color: #6366f1;
+    }
+    
+    .select-wrapper {
+        position: relative;
+    }
+    
+    select {
+        appearance: none;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background-color: #f8fafc;
+        color: #334155;
+        transition: all 0.2s;
+    }
+    
+    select:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        background-color: #fff;
+    }
+    
+    .select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #64748b;
+        pointer-events: none;
+    }
+    
+    .datetime-wrapper {
+        position: relative;
+    }
+    
+    input[type="datetime-local"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background-color: #f8fafc;
+        color: #334155;
+        transition: all 0.2s;
+    }
+    
+    input[type="datetime-local"]:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        background-color: #fff;
+    }
+    
+    .time-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .session-summary {
+        margin-top: 0.5rem;
+        padding: 1rem;
+        background: #f0f4ff;
+        border-radius: 10px;
+        border-left: 4px solid #6366f1;
+    }
+    
+    .summary-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #4f46e5;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-content {
+        font-size: 0.9rem;
+        color: #475569;
+        line-height: 1.5;
+    }
+    
+    .submit-btn {
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    }
+    
+    .submit-btn:hover {
+        background: #4338ca;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 640px) {
+        .time-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+// Function to format date and time in a user-friendly format
+function formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return '';
+    const dt = new Date(dateTimeStr);
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return dt.toLocaleDateString('en-US', options);
+}
+
+// Function to calculate session duration
+function calculateDuration(startTime, endTime) {
+    if (!startTime || !endTime) return '';
+    
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const diff = (end - start) / (1000 * 60); // Duration in minutes
+    
+    if (diff < 60) {
+        return `${diff} minutes`;
+    } else {
+        const hours = Math.floor(diff / 60);
+        const minutes = diff % 60;
+        return `${hours} hour${hours > 1 ? 's' : ''}${minutes > 0 ? ` ${minutes} minute${minutes > 1 ? 's' : ''}` : ''}`;
+    }
+}
+
+// Update the session summary when form inputs change
+function updateSummary() {
+    const partnerSelect = document.getElementById('partner_id');
+    const skillSelect = document.getElementById('skill_id');
+    const startTimeInput = document.getElementById('start_time');
+    const endTimeInput = document.getElementById('end_time');
+    const summaryDiv = document.getElementById('session-summary');
+    
+    // Check if all required fields have values
+    if (partnerSelect.value && skillSelect.value && startTimeInput.value && endTimeInput.value) {
+        const partnerName = partnerSelect.options[partnerSelect.selectedIndex].text;
+        const skillName = skillSelect.options[skillSelect.selectedIndex].text;
+        const startTime = formatDateTime(startTimeInput.value);
+        const endTime = formatDateTime(endTimeInput.value);
+        const duration = calculateDuration(startTimeInput.value, endTimeInput.value);
+        
+        summaryDiv.innerHTML = `
+            <p><strong>Teaching:</strong> ${skillName}</p>
+            <p><strong>With:</strong> ${partnerName}</p>
+            <p><strong>Starting:</strong> ${startTime}</p>
+            <p><strong>Duration:</strong> ${duration}</p>
+        `;
+    } else {
+        summaryDiv.textContent = 'Complete the form to see your session details';
+    }
+}
+
+// Add event listeners to form inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const partnerSelect = document.getElementById('partner_id');
+    const skillSelect = document.getElementById('skill_id');
+    const startTimeInput = document.getElementById('start_time');
+    const endTimeInput = document.getElementById('end_time');
+    
+    partnerSelect.addEventListener('change', updateSummary);
+    skillSelect.addEventListener('change', updateSummary);
+    startTimeInput.addEventListener('change', updateSummary);
+    endTimeInput.addEventListener('change', updateSummary);
+    
+    // Set default minimum date and time for the datetime inputs
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+    const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    startTimeInput.min = minDateTime;
+    endTimeInput.min = minDateTime;
+    
+    // When start time changes, update minimum end time
+    startTimeInput.addEventListener('change', function() {
+        if (startTimeInput.value) {
+            endTimeInput.min = startTimeInput.value;
+            // If end time is before start time, reset it
+            if (endTimeInput.value && endTimeInput.value < startTimeInput.value) {
+                endTimeInput.value = startTimeInput.value;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

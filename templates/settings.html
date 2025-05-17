@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings | SkillSwap{% endblock %}
+
+{% block content %}
+<h1>Settings</h1>
+
+<div class="card wide">
+
+    <!-- Change Password -->
+    <h3>Change Password</h3>
+    <form method="POST" action="/change_password" style="margin-bottom: 2rem;">
+        <label>Current Password:</label><br>
+        <input type="password" name="current_password" required style="width: 100%; padding: 0.5rem;"><br><br>
+
+        <label>New Password:</label><br>
+        <input type="password" name="new_password" required style="width: 100%; padding: 0.5rem;"><br><br>
+
+        <label>Confirm New Password:</label><br>
+        <input type="password" name="confirm_password" required style="width: 100%; padding: 0.5rem;"><br><br>
+
+        <button class="btn" type="submit">Update Password</button>
+    </form>
+
+    <!-- Notifications -->
+    <h3>Notification Preferences</h3>
+    <form method="POST" action="/update_notifications" style="margin-bottom: 2rem;">
+        <label><input type="checkbox" name="email_updates" {% if user.notify_email %}checked{% endif %}> Email updates</label><br>
+        <label><input type="checkbox" name="new_message_alerts" {% if user.notify_messages %}checked{% endif %}> New message alerts</label><br>
+        <label><input type="checkbox" name="session_reminders" {% if user.notify_sessions %}checked{% endif %}> Session reminders</label><br><br>
+
+        <button class="btn" type="submit">Save Preferences</button>
+    </form>
+
+    <!-- Privacy -->
+    <h3>Privacy</h3>
+    <form method="POST" action="/update_privacy" style="margin-bottom: 2rem;">
+        <label><input type="checkbox" name="public_profile" {% if user.is_public %}checked{% endif %}> Show my profile to others</label><br><br>
+        <button class="btn" type="submit">Update Privacy</button>
+    </form>
+
+    <!-- Deactivate -->
+    <h3 style="color: #b00020;">Deactivate Account</h3>
+    <form method="POST" action="/deactivate_account" onsubmit="return confirm('Are you sure you want to deactivate your account?');">
+        <label><input type="checkbox" name="confirm" required> I confirm I want to deactivate my account</label><br><br>
+        <button class="btn" style="background-color: #b00020;">Deactivate</button>
+    </form>
+</div>
+{% endblock %}

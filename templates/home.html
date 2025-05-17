@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillSwap | Learn by Sharing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --gradient: linear-gradient(135deg, #3b82f6, #60a5fa);
+      --card-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      --hover-shadow: 0 20px 35px rgba(0,0,0,0.12);
+      --border-radius: 14px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      font-size: 1.4rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+    }
+
+    nav a {
+      font-weight: 500;
+      color: var(--text);
+      transition: 0.25s;
+      position: relative;
+      padding: 8px 4px;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background: var(--gradient);
+      transition: width 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .section {
+      padding: 120px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Enhanced 3D BACKGROUND FOR HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      z-index: 1;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.25;
+      z-index: 0;
+      animation: float 15s infinite alternate ease-in-out;
+    }
+
+    .hero::before {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #3b82f6, #60a5fa);
+      top: -150px;
+      left: -150px;
+    }
+
+    .hero::after {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #93c5fd, #60a5fa);
+      bottom: -100px;
+      right: -100px;
+      animation-delay: 2s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-20px) scale(1.05); }
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 2;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    .buttons a {
+      padding: 16px 36px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: var(--border-radius);
+      transition: 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .primary-btn {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 10px 20px rgba(59,130,246,0.3);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(59,130,246,0.4);
+    }
+
+    .secondary-btn {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .secondary-btn:hover {
+      background: #dbeafe;
+      transform: translateY(-4px);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 60px;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 4px;
+      background: var(--gradient);
+      bottom: -15px;
+      left: calc(50% - 50px);
+      border-radius: 2px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 40px;
+    }
+
+    .grid-3 {
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 40px 30px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 0;
+      background: var(--gradient);
+      transition: height 0.4s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--hover-shadow);
+    }
+
+    .card:hover::before {
+      height: 100%;
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card i {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .cta-final {
+      background: var(--gradient);
+      color: white;
+      padding: 80px 40px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 20px 40px rgba(37,99,235,0.35);
+      margin-top: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-final::before,
+    .cta-final::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .cta-final::before {
+      width: 300px;
+      height: 300px;
+      top: -150px;
+      right: -100px;
+    }
+
+    .cta-final::after {
+      width: 200px;
+      height: 200px;
+      bottom: -100px;
+      left: -70px;
+    }
+
+    .cta-final h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 20px;
+      -webkit-text-fill-color: white;
+    }
+
+    .cta-final h2::after {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .cta-final a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 30px;
+      background: white;
+      color: var(--primary);
+      padding: 16px 36px;
+      font-weight: 600;
+      border-radius: var(--border-radius);
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .cta-final a:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    footer {
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+      background: #f1f5f9;
+      margin-top: 60px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    @media (min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 20px;
+      }
+      
+      nav {
+        gap: 15px;
+      }
+      
+      .section {
+        padding: 80px 20px;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo"><i class="fas fa-exchange-alt"></i> SkillSwap</div>
+    <nav>
+      <a href="#how">How It Works</a>
+      <a href="#why">Why Us</a>
+      <a href="#join">Join</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="section hero">
+    <div class="container">
+      <h1>Swap Skills. Learn Freely.</h1>
+      <p>Connect with others to teach and learn real-world skills — no cost, just curiosity.</p>
+      <div class="buttons">
+        <a href="/register" class="primary-btn"><i class="fas fa-rocket"></i> Get Started</a>
+        <a href="/login" class="secondary-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" id="how">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3><i class="fas fa-user-edit"></i> Create a Profile</h3>
+          <p>Tell the world what you know and what you're excited to learn.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-people-arrows"></i> Find a Match</h3>
+          <p>Connect with people who want to share or learn the same things.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-sync-alt"></i> Start Swapping</h3>
+          <p>Trade knowledge in sessions online or in-person. Grow together.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Us -->
+  <section class="section" id="why">
+    <div class="container">
+      <h2>Why Choose SkillSwap?</h2>
+      <div class="grid grid-3">
+        <div class="card">
+          <h3><i class="fas fa-hand-holding-usd"></i> Totally Free</h3>
+          <p>No subscriptions or hidden fees — just passion-driven learning.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-users"></i> Real Human Connections</h3>
+          <p>Collaborate with curious minds from your city or across the world.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-brain"></i> Learn Anything</h3>
+          <p>Coding, cooking, surfing, design — if someone knows it, you can too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section" id="join">
+    <div class="container cta-final">
+      <h2>Join the SkillSwap Community</h2>
+      <p>Thousands are already exchanging skills. Jump in and explore a smarter way to learn.</p>
+      <a href="/register"><i class="fas fa-user-plus"></i> Join Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 SkillSwap. All rights reserved.
+  </footer>
+
+</body>
+</html>

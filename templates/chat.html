@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}Chat with {{ partner.username }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; height: 85vh; max-width: 1200px; margin: auto; border-radius: 10px; overflow: hidden; background-color: #f9fafe;">
+
+  <!-- Sidebar -->
+  <div style="width: 260px; background: #ffffff; border-right: 1px solid #e2e8f0; padding: 1rem;">
+    <h3 style="margin-bottom: 1rem; font-size: 1.2rem; color: #1e1e2f;">Contacts</h3>
+    <a href="{{ url_for('chat', partner_id=partner.id) }}" style="text-decoration: none; color: #1e1e2f;">
+      <div style="padding: 12px; background: #f3f4f6; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px;">
+        <strong>{{ partner.username }}</strong>
+      </div>
+    </a>
+  </div>
+
+  <!-- Chat window -->
+  <div style="flex: 1; display: flex; flex-direction: column; background: #ffffff;">
+
+    <!-- Header -->
+    <div style="padding: 1rem; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 1.1rem; color: #2d3748;">
+      Chat with {{ partner.username }}
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-box" style="flex: 1; padding: 1.25rem; overflow-y: auto; scroll-behavior: smooth;">
+      {% for msg in messages %}
+        {% set is_user = msg.sender_id == user.id %}
+        <div style="display: flex; justify-content: {{ 'flex-end' if is_user else 'flex-start' }}; margin-bottom: 15px;">
+          <div style="
+            background-color: {{ '#e0e7ff' if is_user else '#f1f5f9' }};
+            color: #1a202c;
+            padding: 12px 16px;
+            border-radius: 14px;
+            max-width: 70%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          ">
+            <div style="font-weight: 600; margin-bottom: 4px;">{{ msg.sender.username }}</div>
+            <div>{{ msg.content }}</div>
+            {% if msg.file_path %}
+              <div style="margin-top: 10px;">
+                {% if msg.file_path.endswith(('.png', '.jpg', '.jpeg', '.gif')) %}
+                  <img src="{{ msg.file_path }}" style="max-width: 200px; border-radius: 8px;" />
+                {% else %}
+                  <a href="{{ msg.file_path }}" target="_blank" style="color: #5b3df3;">📎 View Attachment</a>
+                {% endif %}
+              </div>
+            {% endif %}
+            <div style="font-size: 0.75em; color: #718096; text-align: right; margin-top: 6px;">
+              {{ msg.timestamp.strftime('%H:%M') }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Message form -->
+    <form method="POST" action="{{ url_for('chat', partner_id=partner.id) }}" enctype="multipart/form-data"
+          style="display: flex; gap: 10px; padding: 1rem; border-top: 1px solid #e2e8f0; background-color: #ffffff;">
+      <input type="text" name="message" placeholder="Type a message..."
+             style="flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #cbd5e0; background: #f9fafb;">
+      <input type="file" name="file" accept="image/*,.pdf,.doc,.docx"
+             style="padding: 6px; border: none;">
+      <button type="submit"
+              style="padding: 10px 18px; background-color: #5b3df3; color: white; border: none; border-radius: 20px; font-weight: bold; cursor: pointer;">
+        Send
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

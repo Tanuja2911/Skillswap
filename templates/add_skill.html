@@ -1,0 +1,23 @@
+<form method="POST" action="/skill/add" style="max-width: 400px; margin: 0 auto; padding: 2rem; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; font-family: Arial, sans-serif;">
+    <div style="margin-bottom: 1rem;">
+        <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Skill:</label>
+        <select name="name" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+            <option value="">Select a skill</option>
+            {% for s in skills %}
+                <option value="{{ s.name }}">{{ s.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <label for="type" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Type:</label>
+        <select name="type" required style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+            <option value="own">I can teach</option>
+            <option value="want">I want to learn</option>
+        </select>
+    </div>
+
+    <button type="submit" style="width: 100%; padding: 0.75rem; background-color: #007BFF; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+        Add Skill
+    </button>
+</form>
