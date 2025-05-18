@@ -33,15 +33,15 @@ def register():
         confirm_password = request.form['confirm-password']
 
         if User.query.filter_by(username=username).first():
-            flash('❌ Username already exists.')
+            flash(' Username already exists.')
             return redirect(url_for('register'))
 
         if User.query.filter_by(email=email).first():
-            flash('❌ Email already in use.')
+            flash(' Email already in use.')
             return redirect(url_for('register'))
 
         if password != confirm_password:
-            flash('❌ Passwords do not match.')
+            flash(' Passwords do not match.')
             return redirect(url_for('register'))
 
         user = User(username=username, email=email)
@@ -113,8 +113,6 @@ def dashboard():
 
     return render_template('dashboard.html', user=user, skills_teach=skills_teach, skills_learn=skills_learn, skills=skill_catalog)
 
-# TODO: Add all other route logic from previous version (verify_skill, add_skill, matches, sessions, settings, etc.)
-
 
 @app.route('/skill/add', methods=['GET', 'POST'])
 def add_skill():
@@ -160,7 +158,7 @@ def add_skill():
 
     return render_template('layout.html', content=render_template('add_skill.html', skills=skills))
 
-# verify_skill route
+
 @app.route('/verify_skill/<skill_name>', methods=['GET', 'POST'])
 def verify_skill(skill_name):
     if 'user_id' not in session:
@@ -199,9 +197,9 @@ def verify_skill(skill_name):
                     verified=True
                 ))
                 db.session.commit()
-                flash(f"✅ Skill verified! You scored {score}/10")
+                flash(f" Skill verified! You scored {score}/10")
         else:
-            flash(f"❌ Test failed. Score: {score}/10")
+            flash(f" Test failed. Score: {score}/10")
         return redirect(url_for('dashboard'))
 
     question = db.session.get(SkillTest, question_ids[index])
@@ -216,7 +214,7 @@ def verify_skill(skill_name):
     return render_template('verify_skill.html', question=question, index=index + 1, total=len(question_ids))
 
 
-# matches route
+
 @app.route('/matches')
 def matches():
     if 'user_id' not in session:
@@ -260,7 +258,7 @@ def matches():
         incoming_requests=Connection.query.filter_by(receiver_id=user.id, status='pending').all()
     )
 
-# sessions route
+
 @app.route('/sessions')
 def sessions():
     if 'user_id' not in session:
@@ -330,7 +328,7 @@ def join_session(session_id):
 
     return render_template('join_session.html', session=sess, partner=partner)
 
-# settings routes
+
 @app.route('/settings')
 def settings():
     if 'user_id' not in session:
@@ -458,8 +456,6 @@ def chat(partner_id):
 
     return render_template('chat.html', user=user, partner=partner, messages=messages)
 
-
-    
 
 if __name__ == '__main__':
     with app.app_context():

@@ -151,16 +151,6 @@ tests_data = {
         ("What is the term for a character's emotional state?", ["Emotion", "Feeling", "State of mind", "None"], "State of mind")
     ],
         
-
-
-
-
-
-
-
-    
-
-
     "java": [
     ("What is JVM?", ["Java Virtual Machine", "Java Very Modern", "Just Very Many", "Java Verification Model"], "Java Virtual Machine"),
     ("What is bytecode in Java?", ["Java source", "Machine code", "Intermediate code", "Garbage code"], "Intermediate code"),
@@ -191,10 +181,9 @@ tests_data = {
 }
 
 with app.app_context():
-    # ✅ Prevent duplicate insertion
     existing_tests = SkillTest.query.first()
     if existing_tests:
-        print("⚠️ Skill tests already exist. Skipping insertion.")
+        print(" Skill tests already exist. Skipping insertion.")
     else:
         for skill, questions in tests_data.items():
             for q_text, options, answer in questions:
@@ -206,4 +195,4 @@ with app.app_context():
                 )
                 db.session.add(test)
         db.session.commit()
-        print("✅ All skill test questions inserted.")
+        print(" All skill test questions inserted.")

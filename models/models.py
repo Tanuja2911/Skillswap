@@ -51,8 +51,6 @@ class Session(db.Model):
     skill = db.relationship('Skill')
 
 
-
-
 class Skill(db.Model):
     __tablename__ = 'skills'
 
@@ -84,14 +82,6 @@ class Match(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-
-
-
-
-
-
-
-
 class Message(db.Model):
     __tablename__ = 'messages'
 
@@ -108,9 +98,6 @@ class Message(db.Model):
     receiver = db.relationship('User', foreign_keys=[receiver_id], back_populates='messages_received')
     
     
-
-
-
 class Notification(db.Model):
     __tablename__ = 'notifications'
 
@@ -130,9 +117,6 @@ class Connection(db.Model):
 
     requester = db.relationship('User', foreign_keys=[requester_id], backref='sent_requests')
     receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_requests')
-
-
-
 
 class SkillCatalog(db.Model):  
     id = db.Column(db.Integer, primary_key=True)
